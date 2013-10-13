@@ -120,18 +120,22 @@ def move( x=0, y=0, point=None ):
     - x: The x position.
     - y: the y position.
     """
-    global isGnome
+    display = Gdk.Display.get_default()
+    manager = display.get_device_manager()
+    pointer = manager.get_client_pointer()
+    screen = display.get_default_screen()
 
     if point is not None:
         x, y = point.x, point.y
         
     
-    old_x, old_y = position()
+    screen2,old_x, old_y = pointer.get_position()
     x_diff = abs(old_x - x) 
     y_diff = abs(old_y - y) 
     
     while True:
-        old_x, old_y = position()
+        screen2,old_x, old_y = pointer.get_position()
+	#print(pointer.get_position())
         
         if x_diff <= 0 and y_diff <= 0:
             break
@@ -145,19 +149,12 @@ def move( x=0, y=0, point=None ):
              new_x = x - 1
              
         if y > old_y:
-             new_y = y + 1
+             new_y = y + 25
         else:
-             new_y = y - 1
+             new_y = y - 25
              
-        if isGnome:
-            try:
-                reg.generateMouseEvent( x, y, 'abs' )
-            except:
-                isGnome = False
-        else:
-            xtest.fake_input( xDisplay, X.MotionNotify, x = x, y = y)
-            #display.sync()
-            xDisplay.flush()
+        print ("Mouse Points ", x, y)
+	pointer.warp(screen,x,y)
             
     return True
 

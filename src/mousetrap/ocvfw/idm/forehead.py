@@ -30,6 +30,7 @@ __license__   = "GPLv2"
 import mousetrap.ocvfw.debug as debug
 import mousetrap.ocvfw.commons as commons
 from mousetrap.ocvfw.dev.camera import Capture, Point, Graphic
+from gi.repository import GObject
 
 a_name = "Forehead"
 a_description = "Forehead point tracker based on LK Algorithm"
@@ -121,9 +122,10 @@ class Module(object):
 
         returns self.cap.image()
         """
-
-        if not hasattr(self.cap, "forehead"):
-            self.get_forehead()
+	#FIXME: Is this causing the forehead to only load once? If you remove this, and have it call each time, the camera never shows, but it apprears to update face location - LMH
+        #if not hasattr(self.cap, "forehead"):
+	debug.debug("forehead", "No forehead found")
+        self.get_forehead()
 
 	#self.get_forehead()
 
@@ -152,9 +154,7 @@ class Module(object):
 
             areas    = [ (pt[1][0] - pt[0][0])*(pt[1][1] - pt[0][1]) for pt in face ] #replaced x with [0] and y with [1]
             startF   = face[areas.index(max(areas))][0]
-	    #startF = face[0][0]
 	    endF     = face[areas.index(max(areas))][1]
-	    #endF = face[0][1]
 
             # Shows the face rectangle
             self.cap.add( Graphic("rect", "Face", ( startF[0], startF[1] ), (endF[0], endF[1]), parent=self.cap) )
@@ -178,6 +178,7 @@ class Module(object):
             X, Y = ( (point1[0] + point2[0]) / 2 ), ( point1[1] + ( (point1[1] + point2[1]) / 2 ) ) / 2 #replaced x and y
 	    self.cap.forehead = (X,Y)
 
+	    #FIXME: The following line hardcodes a location for the forehead point. -LMH
 	    self.cap.forehead = (((startF[0] + endF[0])/2),((startF[1] + endF[1])/2))
             self.cap.add( Point("point", "forehead-point", self.cap.forehead, parent=self.cap, follow=True) )
 	    debug.debug("forehead point", self.cap.forehead)

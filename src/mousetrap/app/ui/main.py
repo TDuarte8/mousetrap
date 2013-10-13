@@ -176,6 +176,7 @@ class MainGui( Gtk.Window ):
 			return False
 		
 		#sets new pixbuf
+		#debug.debug("main.py", "new image updated")
 		self.cap_image.set_from_pixbuf(cap.to_gtk_buff().scale_simple(200, 160, GdkPixbuf.InterpType.BILINEAR))
 		
 #	def recalPoint(self, widget, flip = ''):

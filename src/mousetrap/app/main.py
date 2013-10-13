@@ -92,7 +92,7 @@ class Controller():
             self.idm.set_capture(self.cfg.getint("cam", "inputDevIndex"))
 
             #Will return false when cap.image() is false in ui/main
-            GObject.timeout_add(150, self.update_frame)    #Thread that updates the image on the screen
+            GObject.timeout_add(500, self.update_frame)    #Thread that updates the image on the screen
             GObject.timeout_add(50, self.update_pointers)   #Thread that moves the mouse
             
             debug.info("mousetrap", "Idm loaded and started")

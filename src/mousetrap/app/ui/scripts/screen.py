@@ -53,6 +53,7 @@ class ScriptClass(Mapper):
         self.point       = None
         self.border_with = 0
 
+	#FIXME: uncommenting this results in tracebacks and the window not showing. -LMH
         self.connect("expose_event", self.expose_event)
 
     def update_items(self, point):
