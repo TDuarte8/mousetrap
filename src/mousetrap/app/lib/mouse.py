@@ -27,7 +27,6 @@ __copyright__ = "Copyright (c) 2008 Flavio Percoco Premoli"
 __license__   = "GPLv2"
 
 import pyatspi
-#import gtk #FIXME: Remove this
 from gi.repository import Gdk
 from gi.repository import Gtk
 import mousetrap.app.debug as debug
@@ -44,6 +43,11 @@ clickType = { 'p' : [ X.ButtonPress ],
               'c' : [ X.ButtonPress, X.ButtonRelease],
               'd' : [ X.ButtonPress, X.ButtonRelease,
                       X.ButtonPress, X.ButtonRelease ] }
+
+gdkDisplay = Gdk.Display.get_default()
+manager = gdkDisplay.get_device_manager()
+pointer = manager.get_client_pointer()
+screen = gdkDisplay.get_default_screen()
 
 
 ## GTK Display for any user
@@ -72,7 +76,7 @@ def position( *arg ):
 
     Returns A list with the X and Y coordinates.
     """
-    return list(gtkDisplay.get_pointer()[1:3])
+    return list(pointer.get_position()[1:3])
 
 def click( x = None, y = None, button = "bc1" ):
     """
@@ -120,22 +124,17 @@ def move( x=0, y=0, point=None ):
     - x: The x position.
     - y: the y position.
     """
-    display = Gdk.Display.get_default()
-    manager = display.get_device_manager()
-    pointer = manager.get_client_pointer()
-    screen = display.get_default_screen()
 
     if point is not None:
         x, y = point.x, point.y
         
     
-    screen2,old_x, old_y = pointer.get_position()
+    old_x, old_y = position()
     x_diff = abs(old_x - x) 
     y_diff = abs(old_y - y) 
     
     while True:
-        screen2,old_x, old_y = pointer.get_position()
-	#print(pointer.get_position())
+        old_x, old_y = position()
         
         if x_diff <= 0 and y_diff <= 0:
             break
@@ -144,16 +143,15 @@ def move( x=0, y=0, point=None ):
         y_diff -= 1
         
         if x > old_x:
-             new_x = x + 1
+             new_x = x + 25
         else:
-             new_x = x - 1
+             new_x = x - 25
              
         if y > old_y:
              new_y = y + 25
         else:
              new_y = y - 25
-             
-        print ("Mouse Points ", x, y)
+
 	pointer.warp(screen,x,y)
             
     return True

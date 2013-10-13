@@ -54,12 +54,14 @@ class ScriptClass(Mapper):
         self.border_with = 0
 
 	#FIXME: uncommenting this results in tracebacks and the window not showing. -LMH
-        self.connect("expose_event", self.expose_event)
+        self.connect("draw", self.expose_event)
 
     def update_items(self, point):
         self.point = point
         self.calc_move()
         self.queue_draw()
+	if point:
+	    mouse.move(point[0], point[1])
 
     def expose_event(self, widget, event):
         self.width, self.height = self.allocation[2], self.allocation[3]

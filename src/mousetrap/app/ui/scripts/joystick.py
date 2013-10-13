@@ -57,11 +57,9 @@ class ScriptClass(Mapper):
         self.connect("draw", self.expose_event)
 
     def update_items(self, point):
-	print("JOYSTICK: joystick In update items")
         self.point = point
-	print(point)
-        #self.calc_move()
-        #self.queue_draw()
+        self.calc_move()
+        self.queue_draw()
 	if point:
 	    mouse.move(point[0], point[1])
     
