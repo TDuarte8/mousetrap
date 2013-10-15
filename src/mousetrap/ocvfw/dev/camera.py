@@ -225,7 +225,7 @@ class Capture(object):
         Arguments:
         - self: The main object pointer.
         """
-        #debug.debug("Camera", "Showing existing rectangles -> %d" % len(rectangles))
+        debug.debug("Camera", "Showing existing rectangles -> %d" % len(rectangles))
 
         for rect in rectangles:
             co.cv.Rectangle( self.__image, (rect.x, rect.y), (rect.size[0], rect.size[1]), co.cv.CV_RGB(255,0,0), 3, 8, 0 )
@@ -328,13 +328,18 @@ class Capture(object):
         if self.is_locked():
             warn("The Capture is locked, no changes can be done", RuntimeWarning)
             return False
+	
+        #if not hasattr(self, graphic.label):
+	#self.__graphics[graphic.type].append(graphic)
+	try:
+		self.__graphics[graphic.type].pop(0)
+	except IndexError:
+		pass
+	setattr(self, graphic.label, graphic)
+	self.__graphics[graphic.type].append(graphic)
 
-        if not hasattr(self, graphic.label):
-            setattr(self, graphic.label, graphic)
-            self.__graphics[graphic.type].append(graphic)
-
-            if graphic.is_point():
-                Camera.set_lkpoint(graphic)
+	if graphic.is_point():
+		Camera.set_lkpoint(graphic)
         else:
             warn("The Graphic %s already exists. It wont be added" % graphic.label, RuntimeWarning)
             return False
@@ -376,8 +381,6 @@ class Capture(object):
         if roi is None:
             return Camera.get_haar_points(haar_csd)
 
-	#FIXME:This should not be hard coded
-	#roi = (250, 120, 390, 360)
         roi = (roi["start"], roi["end"], roi["width"], roi["height"]) #get_haar_roi_points needs a list
         #roi = co.cv.Rectangle(self.__image, (roi[0], roi[1]), (roi[2], roi[3]), (0,0,255)) 
 						# was roi["start"], roi["end"]), (roi["width"], roi["height"]

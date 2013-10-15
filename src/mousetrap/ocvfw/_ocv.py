@@ -375,7 +375,6 @@ class OcvfwPython(OcvfwBase):
                         for r in points]
            
             debug.debug( "ocvfw", "cmGetHaarPoints: detected some matches" )
-            debug.debug("ocvfw-getHaarPoints", matches)
             return matches
 
     def get_haar_roi_points(self, haarCascade, rect, origSize=(0, 0), method=co.cv.CV_HAAR_DO_CANNY_PRUNING):
@@ -400,10 +399,10 @@ class OcvfwPython(OcvfwBase):
 		rect = (rect[0], rect[1], self.img.width-rect[0],self.img.height-rect[1])
 	if (rect[1]+rect[3]) > self.img.height:
 		rect = (rect[0], rect[1], self.img.width-rect[0],self.img.height-rect[1])
-
-        debug.debug("before GetSubRect - rect",rect)
-	debug.debug("before GetSubRect - self.img", self.img)
-        imageROI = co.cv.GetSubRect(self.img, rect)
+	try:
+        	imageROI = co.cv.GetSubRect(self.img, rect)
+	except cv2.error:
+		print "****** imageROI error _ocv", self.img, rect
 
         if cascade:
             points = co.cv.HaarDetectObjects( imageROI, cascade, self.storage,
@@ -420,8 +419,6 @@ class OcvfwPython(OcvfwBase):
               #            for r in points]
 	   #FIXME: I don't think the  matches are right
 
-            debug.debug( "ocvfw", "cmGetHaarROIPoints: detected some matches" )
-	    debug.debug("ocvfw-getHaarROIPoints", matches)
             return matches
 
 
